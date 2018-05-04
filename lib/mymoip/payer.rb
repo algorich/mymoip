@@ -6,7 +6,7 @@ module MyMoip
                   :address_street, :address_street_number,
                   :address_street_extra, :address_neighbourhood,
                   :address_city, :address_state, :address_country,
-                  :address_cep, :address_phone
+                  :address_cep, :address_phone, :document
 
     validates_presence_of :id, :name, :email, :address_street,
                           :address_street_number, :address_neighbourhood,
@@ -48,6 +48,12 @@ module MyMoip
       @address_phone = value
     end
 
+    def document=(value)
+      value.gsub!(/\D*/, '') unless value.nil?
+
+      @document = value
+    end
+
     def to_xml(root = nil, formatter = MyMoip::Formatter)
       if root.nil?
         xml  = ""
@@ -57,6 +63,7 @@ module MyMoip
       root.Nome(@name)
       root.Email(@email)
       root.IdPagador(@id)
+      root.Identidade(@document, Tipo: "CPF")
       root.EnderecoCobranca do |n1|
         n1.Logradouro(@address_street)
         n1.Numero(@address_street_number)
